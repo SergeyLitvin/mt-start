@@ -1,0 +1,14 @@
+@columns: 12;
+@offset: 30px;
+@path_img: "../img/";
+@font_img: "../fonts/";
+
+.size(@n, @c: @columns, @o: @offset){
+	width: calc(100% / @c * @n - @o);
+}
+
+.from(@mw, @content){
+	@media screen and (min-width: @mw){
+		@content();
+	}
+}
