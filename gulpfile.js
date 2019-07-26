@@ -44,59 +44,59 @@ config.css.files = [
 ];
 */
 
-function html(){
+function html() {
 	return gulp.src(config.src + config.html.src)
-			   .pipe(gulp.dest(config.build + config.html.dest))
-			   .pipe(gulpIf(isSync, browserSync.stream()));
+		.pipe(gulp.dest(config.build + config.html.dest))
+		.pipe(gulpIf(isSync, browserSync.stream()));
 }
 
-function img(){
+function img() {
 	return gulp.src(config.src + config.img.src)
-			   .pipe(gulpIf(isProd, imagemin([
-			   		imageminPngquant({
-			   			quality: [0.7, 0.9]
-			   		})
-			   	])))
-			   .pipe(gulp.dest(config.build + config.img.dest));
+		.pipe(gulpIf(isProd, imagemin([
+			imageminPngquant({
+				quality: [0.7, 0.9]
+			})
+		])))
+		.pipe(gulp.dest(config.build + config.img.dest));
 }
 
-function css(){
+function css() {
 	return gulp.src(config.src + config.css.src)
-			   .pipe(gulpIf(isDev, sourcemaps.init()))
-			   .pipe(less())
-			   .pipe(gcmq())
-			   .pipe(autoprefixer({
-		            browsers: ['> 0.2%']
-		        }))
-			   .pipe(gulpIf(isProd, cleanCSS({
-		            level: 2
-		        })))
-			   .pipe(gulpIf(isDev, sourcemaps.write()))
-			   .pipe(gulp.dest(config.build + config.css.dest))
-			   .pipe(gulpIf(isSync, browserSync.stream()));
+		.pipe(gulpIf(isDev, sourcemaps.init()))
+		.pipe(less())
+		.pipe(gcmq())
+		.pipe(autoprefixer({
+			browsers: ['> 0.2%']
+		}))
+		.pipe(gulpIf(isProd, cleanCSS({
+			level: 2
+		})))
+		.pipe(gulpIf(isDev, sourcemaps.write()))
+		.pipe(gulp.dest(config.build + config.css.dest))
+		.pipe(gulpIf(isSync, browserSync.stream()));
 }
 
-function clear(){
+function clear() {
 	return del(config.build + '/*');
 }
 
-function watch(){
-	if(isSync){
+function watch() {
+	if (isSync) {
 		browserSync.init({
-	        server: {
-	            baseDir: config.build
-	        },
-	        // tunnel: true
-	    });
+			server: {
+				baseDir: config.build
+			},
+			// tunnel: true
+		});
 	}
 
 	gulp.watch(config.src + config.html.src, html);
 	gulp.watch(config.src + config.css.watch, css);
 }
 
-let build = gulp.series(clear, 
-				gulp.parallel(html, img, css)
-			);
+let build = gulp.series(clear,
+	gulp.parallel(html, img, css)
+);
 
 gulp.task('build', build);
 gulp.task('watch', gulp.series(build, watch));
